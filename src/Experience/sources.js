@@ -12,11 +12,11 @@ export default [
     //         'textures/environmentMap/nz.png'
     //     ]
     // },
-    {
-        name: 'environmentMapTexture',
-        type: 'texture',
-        path: 'textures/environmentMap/hdri.png'
-    },
+    // {
+    //     name: 'environmentMapTexture',
+    //     type: 'texture',
+    //     path: 'textures/environmentMap/hdri.png'
+    // },
     // {
     //     name: 'textFont',
     //     type: 'font',
