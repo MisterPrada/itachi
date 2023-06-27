@@ -104,7 +104,7 @@ export default class Sun {
             gsap.to(this.experience.world.godRays.bloomPass, {
                 duration: 4,
                 //delay: 1,
-                strength: 2.49,
+                strength: 2.59,
                 ease: "Power4.out",
             }),
             "start"
