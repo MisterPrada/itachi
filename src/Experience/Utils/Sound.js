@@ -16,6 +16,20 @@ export default class Sound extends EventEmitter
 
     }
 
+    isTabVisible() {
+        return document.visibilityState === "visible";
+    }
+
+    handleVisibilityChange() {
+        if (this.isTabVisible()) {
+            this.backgroundSound.play();
+            this.listener.setMasterVolume(1)
+        } else {
+            this.backgroundSound.pause();
+            this.listener.setMasterVolume(0)
+        }
+    }
+
     createSounds() {
         if ( this.soundsCreated === true )
             return
@@ -35,5 +49,16 @@ export default class Sound extends EventEmitter
         this.sharinganSound.setVolume( 0.7 );
 
         this.soundsCreated = true;
+
+
+        document.addEventListener('visibilitychange', () => this.handleVisibilityChange(), false);
+
+        // window.addEventListener('blur', () => this.backgroundSound.pause());
+        // window.addEventListener('focus', () => {
+        //     if (isTabVisible()) {
+        //         this.backgroundSound.play();
+        //     }
+        // });
+
     }
 }

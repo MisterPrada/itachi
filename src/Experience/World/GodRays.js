@@ -5,6 +5,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { GlitchPass } from "three/addons/postprocessing/GlitchPass.js";
 
 import bloomVertexShader from '../Shaders/Bloom/vertex.glsl'
 import bloomFragmentShader from '../Shaders/Bloom/fragment.glsl'
@@ -33,7 +34,7 @@ export default class GodRays {
 
         this.sphereMesh;
 
-        this.sunPosition = new THREE.Vector3( 0, 0, - 1000 );
+        this.sunPosition = new THREE.Vector3( 0, 300, - 1000 );
         this.clipPosition = new THREE.Vector4();
         this.screenSpacePosition = new THREE.Vector3();
 
@@ -114,7 +115,7 @@ export default class GodRays {
         // BLOOM
         this.bloomParams = {
             threshold: 0,
-            strength: 0.59,
+            strength: 4.0,
             radius: 1.0,
             exposure: 1
         };
@@ -145,12 +146,44 @@ export default class GodRays {
         this.mixPass.needsSwap = true;
 
 
-        this.outputPass = new OutputPass( THREE.ReinhardToneMapping );
 
         this.composer = new EffectComposer( this.renderer );
         this.composer.addPass( this.renderSceneBloom );
         this.composer.addPass( this.mixPass );
 
+        // this.glitchPass = new GlitchPass();
+        // this.composer.addPass( this.glitchPass );
+
+        this.contrastShader = {
+            uniforms: {
+                "tDiffuse": { type: "t", value: null },
+                "contrast":  { type: "f", value: 3.0 } // Level of contrast adjustment
+            },
+            vertexShader: [
+                "varying vec2 vUv;",
+                "void main() {",
+                "vUv = uv;",
+                "gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
+                "}"
+            ].join("\n"),
+            fragmentShader: [
+                "uniform sampler2D tDiffuse;",
+                "uniform float contrast;",
+                "varying vec2 vUv;",
+                "void main() {",
+                "vec4 color = texture2D(tDiffuse, vUv);",
+                "vec3 c = color.rgb - 0.5;",
+                "c *= contrast;",
+                "c += 0.5;",
+                "gl_FragColor = vec4(c, color.a);",
+                "}"
+            ].join("\n")
+        };
+
+        this.contrastPass = new ShaderPass(this.contrastShader);
+        this.composer.addPass(this.contrastPass);
+
+        this.outputPass = new OutputPass( THREE.ReinhardToneMapping );
         //this.composer.addPass( this.outputPass );
 
 
@@ -216,7 +249,7 @@ export default class GodRays {
         this.postprocessing.godraysFakeSunUniforms.bgColor.value.setHex( this.bgColor );
         this.postprocessing.godraysFakeSunUniforms.sunColor.value.setHex( this.sunColor );
 
-        this.postprocessing.godrayCombineUniforms.fGodRayIntensity.value = 0.15;
+        this.postprocessing.godrayCombineUniforms.fGodRayIntensity.value = 0.35;
 
         this.postprocessing.quad = new THREE.Mesh(
             new THREE.PlaneGeometry( 1.0, 1.0 ),
