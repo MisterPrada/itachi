@@ -27,7 +27,7 @@ body
     position: fixed;
     left: 0;
     top: 0;
-    height: 100vh;
+    height: 100%;
     width: 100%;
     z-index: 99999;
     display: flex;
@@ -137,9 +137,9 @@ body
 
 .preloaded:before,
 .preloaded:after {
-    -webkit-animation: preloadedzero 300ms ease-in-out 500ms forwards;
-    -o-animation: preloadedzero 300ms ease-in-out 500ms forwards;
-    animation: preloadedzero 300ms ease-in-out 500ms forwards;
+    -webkit-animation: preloadedzero 1000ms ease-in-out 500ms forwards;
+    -o-animation: preloadedzero 1000ms ease-in-out 500ms forwards;
+    animation: preloadedzero 1000ms ease-in-out 500ms forwards;
 }
 
 @keyframes preloadedzero {

@@ -38,7 +38,7 @@ export default class World
                     this.html.preloader.classList.add("preloaded");
                     setTimeout(() => {
                         this.html.preloader.remove();
-                    }, 1000);
+                    }, 2500);
 
                     // Animation timeline
                     this.animationPipeline();
