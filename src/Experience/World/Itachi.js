@@ -39,6 +39,9 @@ export default class Sun {
                 this.itachiEye.material.color = new THREE.Color(0xffffff)
                 this.itachiEye.material.transparent = true
                 this.itachiEye.material.opacity = 0.0
+                this.itachiEye.material.emissiveIntensity = 0.03
+                this.itachiEye.material.emissive = new THREE.Color(0xff0000)
+                this.itachiEye.material.blending = THREE.NormalBlending
             }
 
             if (child.isMesh && child.name == 'model_2001') {
@@ -104,7 +107,7 @@ export default class Sun {
             gsap.to(this.experience.world.godRays.bloomPass, {
                 duration: 8,
                 //delay: 1,
-                strength: 2.09,
+                strength: 1.26,
                 ease: "Power4.out",
             }),
             "start"

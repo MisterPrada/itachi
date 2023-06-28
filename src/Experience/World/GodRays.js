@@ -35,8 +35,6 @@ export default class GodRays {
         this.container = {}
         this.materialDepth = {};
 
-        this.sphereMesh;
-
         this.sunPosition = new THREE.Vector3( 0, 300, - 1000 );
         this.clipPosition = new THREE.Vector4();
         this.screenSpacePosition = new THREE.Vector3();
@@ -70,14 +68,6 @@ export default class GodRays {
         this.tree.scale.multiplyScalar( 400 );
         this.tree.rotation.y = -Math.PI / 2;
         this.scene.add( this.tree );
-
-        // sphere
-
-        this.geo = new THREE.SphereGeometry( 1, 20, 10 );
-        this.sphereMesh = new THREE.Mesh( this.geo, this.materialScene );
-        this.sphereMesh.scale.multiplyScalar( 20 );
-        this.scene.add( this.sphereMesh );
-
 
         this.renderer.setClearColor( 0xffffff );
         this.renderer.autoClear = false;
@@ -118,7 +108,7 @@ export default class GodRays {
         // BLOOM
         this.bloomParams = {
             threshold: 0,
-            strength: 4.0,
+            strength: 3.0,
             radius: 1.0,
             exposure: 1
         };
@@ -296,9 +286,6 @@ export default class GodRays {
 
     render() {
         const time = Date.now() / 4000;
-
-        this.sphereMesh.position.x = this.orbitRadius * Math.cos( time );
-        this.sphereMesh.position.z = this.orbitRadius * Math.sin( time ) - 100;
 
         if ( this.postprocessing.enabled ) {
 

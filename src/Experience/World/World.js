@@ -2,6 +2,7 @@ import Experience from '../Experience.js'
 import Environment from './Environment.js'
 import Itachi from './Itachi.js'
 import GodRays from './GodRays.js'
+import Crow from './Crow.js'
 
 export default class World
 {
@@ -30,6 +31,7 @@ export default class World
                     // Setup
                     this.godRays = new GodRays()
                     this.itachi = new Itachi()
+                    this.crow = new Crow()
                     this.environment = new Environment()
 
                     // Remove preloader
@@ -62,5 +64,8 @@ export default class World
     {
         if (this.godRays)
             this.godRays.render()
+
+        if (this.crow)
+            this.crow.update()
     }
 }

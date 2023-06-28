@@ -52,6 +52,12 @@ export default [
     },
 
     {
+        name: 'crowModel',
+        type: 'gltfModel',
+        path: 'models/Crow/Crow.glb'
+    },
+
+    {
         name: 'itachiModel',
         type: 'gltfModel',
         path: 'models/Itachi/Itachi.glb'
