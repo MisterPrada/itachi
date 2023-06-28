@@ -6,6 +6,9 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { GlitchPass } from "three/addons/postprocessing/GlitchPass.js";
+import { AfterimagePass } from "three/addons/postprocessing/AfterimagePass.js";
+import { VignetteShader } from 'three/examples/jsm/shaders/VignetteShader.js';
+
 
 import bloomVertexShader from '../Shaders/Bloom/vertex.glsl'
 import bloomFragmentShader from '../Shaders/Bloom/fragment.glsl'
@@ -42,7 +45,7 @@ export default class GodRays {
 
         this.orbitRadius = 600;
 
-        this.bgColor  = 0x000000;
+        this.bgColor  = 0x0f0000;
         this.sunColor = 0xff0000;
 
         // Use a smaller size for some of the god-ray render targets for better performance.
@@ -183,8 +186,17 @@ export default class GodRays {
         this.contrastPass = new ShaderPass(this.contrastShader);
         this.composer.addPass(this.contrastPass);
 
-        this.outputPass = new OutputPass( THREE.ReinhardToneMapping );
-        //this.composer.addPass( this.outputPass );
+
+        this.vignettePass = new ShaderPass(VignetteShader);
+        this.vignettePass.uniforms['offset'].value = 0.9;
+        this.vignettePass.uniforms['darkness'].value = 1.52;
+        this.composer.addPass(this.vignettePass);
+
+        // this.afterImagePass = new AfterimagePass(1.56);
+        // this.composer.addPass(this.afterImagePass);
+
+        // this.outputPass = new OutputPass( THREE.ReinhardToneMapping );
+        // this.composer.addPass( this.outputPass );
 
 
         // Switching the depth formats to luminance from rgb doesn't seem to work. I didn't
@@ -446,6 +458,22 @@ export default class GodRays {
                 this.outputPass.toneMappingExposure = Math.pow( value, 4.0 );
 
             } );
+
+
+
+            const vignetteFolder = this.debug.ui.addFolder('Vignette')
+
+            vignetteFolder.add( this.vignettePass.uniforms['offset'], 'value')
+                .name('offset')
+                .min(0)
+                .max(10)
+                .step(0.01)
+
+            vignetteFolder.add( this.vignettePass.uniforms['darkness'], 'value')
+                .name('offset')
+                .min(0)
+                .max(10)
+                .step(0.01)
         }
 
 

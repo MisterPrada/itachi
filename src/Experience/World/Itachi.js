@@ -74,7 +74,7 @@ export default class Sun {
             gsap.to(this.experience.world.godRays.postprocessing.godrayCombineUniforms.fGodRayIntensity, {
                 duration: 12,
                 delay: 4,
-                value: 0.45,
+                value: 0.40,
                 ease: "Power4.out",
             }),
             "start"
