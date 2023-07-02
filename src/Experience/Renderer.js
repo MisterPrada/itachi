@@ -22,7 +22,6 @@ export default class Renderer
             antialias: false,
             stencil: false,
             depth: false
-            //antialias: true
         })
 
         // this.instance.physicallyCorrectLights = true

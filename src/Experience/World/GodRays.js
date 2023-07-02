@@ -6,8 +6,9 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { GlitchPass } from "three/addons/postprocessing/GlitchPass.js";
-import { AfterimagePass } from "three/addons/postprocessing/AfterimagePass.js";
 import { VignetteShader } from 'three/examples/jsm/shaders/VignetteShader.js';
+
+
 
 
 import bloomVertexShader from '../Shaders/Bloom/vertex.glsl'
@@ -21,6 +22,7 @@ export default class GodRays {
         this.world = this.experience.world
         this.debug = this.experience.debug
         this.scene = this.experience.scene
+        this.sizes = this.experience.sizes
         this.time = this.experience.time
         this.camera = this.experience.camera.instance
         this.debug = this.experience.debug
@@ -88,6 +90,12 @@ export default class GodRays {
         const adjustedHeight = renderTargetHeight * this.godrayRenderTargetResolutionMultiplier;
         this.postprocessing.rtTextureGodRays1.setSize( adjustedWidth, adjustedHeight );
         this.postprocessing.rtTextureGodRays2.setSize( adjustedWidth, adjustedHeight );
+
+        this.bloomComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+        this.bloomComposer.setSize(this.sizes.width, this.sizes.height)
+
+        this.composer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+        this.composer.setSize(this.sizes.width, this.sizes.height)
     }
 
     initPostprocessing( renderTargetWidth, renderTargetHeight ) {
@@ -120,7 +128,11 @@ export default class GodRays {
         this.bloomPass.strength = this.bloomParams.strength;
         this.bloomPass.radius = this.bloomParams.radius;
 
+
+
         this.bloomComposer = new EffectComposer( this.renderer );
+        this.bloomComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+        this.bloomComposer.setSize(this.sizes.width, this.sizes.height)
         this.bloomComposer.renderToScreen = false;
         this.bloomComposer.addPass( this.renderScene );
         this.bloomComposer.addPass( this.bloomPass );
@@ -138,10 +150,12 @@ export default class GodRays {
         );
         this.mixPass.needsSwap = true;
 
-
-
         this.composer = new EffectComposer( this.renderer );
+        this.composer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+        this.composer.setSize(this.sizes.width, this.sizes.height)
+
         this.composer.addPass( this.renderSceneBloom );
+
         this.composer.addPass( this.mixPass );
 
         // this.glitchPass = new GlitchPass();
@@ -176,14 +190,12 @@ export default class GodRays {
         this.contrastPass = new ShaderPass(this.contrastShader);
         this.composer.addPass(this.contrastPass);
 
-
         this.vignettePass = new ShaderPass(VignetteShader);
+
+
         this.vignettePass.uniforms['offset'].value = 0.9;
         this.vignettePass.uniforms['darkness'].value = 1.52;
         this.composer.addPass(this.vignettePass);
-
-        // this.afterImagePass = new AfterimagePass(1.56);
-        // this.composer.addPass(this.afterImagePass);
 
         // this.outputPass = new OutputPass( THREE.ReinhardToneMapping );
         // this.composer.addPass( this.outputPass );
