@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import Experience from '../Experience.js'
 import gsap from "gsap";
-export default class Sun {
+export default class Itachi {
     constructor() {
         this.experience = new Experience()
         this.debug = this.experience.debug
@@ -115,22 +115,10 @@ export default class Sun {
     }
 
     update() {
-        this.material.uniforms.uTime.value = this.time.elapsed * 0.1
-        this.sun.lookAt(this.camera.instance.position)
+
     }
 
     setDebug() {
-        // Debug
-        if(this.debug.active)
-        {
-            this.debugFolder = this.debug.ui.addFolder('Sun')
-            this.debugFolder.add(this.sun.position, 'x').min(-10).max(10).step(0.1).name('position x')
-            this.debugFolder.add(this.sun.position, 'y').min(-10).max(10).step(0.1).name('position y')
-            this.debugFolder.add(this.sun.position, 'z').min(-10).max(10).step(0.1).name('position z')
 
-            this.debugFolder.add(this.sun.scale, 'x').min(-20).max(20).step(0.1).name('scale x')
-            this.debugFolder.add(this.sun.scale, 'y').min(-20).max(20).step(0.1).name('scale y')
-            this.debugFolder.add(this.sun.scale, 'z').min(-20).max(20).step(0.1).name('scale z')
-        }
     }
 }

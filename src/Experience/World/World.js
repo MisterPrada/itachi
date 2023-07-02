@@ -67,5 +67,8 @@ export default class World
 
         if (this.crow)
             this.crow.update()
+
+        if (this.itachi)
+            this.itachi.update()
     }
 }

@@ -21,7 +21,8 @@ export default class Renderer
             powerPreference: "high-performance",
             antialias: false,
             stencil: false,
-            depth: false
+            depth: false,
+            useLegacyLights: false,
         })
 
         // this.instance.physicallyCorrectLights = true

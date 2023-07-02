@@ -51,8 +51,6 @@ export default class Camera
 
     update()
     {
-        this.instance.lookAt(new THREE.Vector3(0, 0, 0));
-
         if (this.cursorEnabled === true) {
             const lerpTarget = new THREE.Vector3();
             const targetX = 50.0 + this.experience.cursor.x * 40;
@@ -66,6 +64,8 @@ export default class Camera
 
             this.instance.position.copy(this.lerpVector);
         }
+
+        this.instance.lookAt(new THREE.Vector3(0.1, 0.1, 0.1));
         //this.controls.update()
     }
 
