@@ -63,7 +63,7 @@ export default class World
     update()
     {
         if (this.godRays)
-            this.godRays.render()
+            this.godRays.update()
 
         if (this.crow)
             this.crow.update()

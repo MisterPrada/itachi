@@ -44,7 +44,11 @@ export default [
         type: 'audio',
         path: 'sounds/sharingan.mp3'
     },
-
+    {
+        name: 'crowsSound',
+        type: 'audio',
+        path: 'sounds/crows.mp3'
+    },
     {
         name: 'treeModel',
         type: 'objModel',

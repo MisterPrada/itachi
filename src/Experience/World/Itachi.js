@@ -1,10 +1,12 @@
 import * as THREE from 'three'
 import Experience from '../Experience.js'
 import gsap from "gsap";
+import Time from "../Utils/Time.js";
 export default class Itachi {
     constructor() {
         this.experience = new Experience()
         this.debug = this.experience.debug
+        this.world = this.experience.world
         this.scene = this.experience.scene
         this.time = this.experience.time
         this.camera = this.experience.camera
@@ -56,6 +58,13 @@ export default class Itachi {
         });
 
         this.scene.add(this.itachi);
+
+        // create red cube
+        var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+        var material = new THREE.MeshBasicMaterial( {color: 0xff0000} );
+        this.cube = new THREE.Mesh( geometry, material );
+
+        this.waveTarget = new THREE.Vector3(2.3, 28, 5);
     }
 
     setEyeAnimation() {
@@ -67,11 +76,27 @@ export default class Itachi {
                 ease: "expo.out",
                 onStart: () => {
                     this.experience.sound.sharinganSound.play()
+                },
+                onUpdate: () => {
+                    if (!this.shockWaveClock) {
+                        this.shockWaveClock = new Time()
+                        this.world.godRays.shockWavePass.enabled = true
+                        this.world.godRays.shockWaveShader.uniforms['uTime'].value = 0.0
+
+                        setTimeout(() => {
+                            this.world.godRays.shockWavePass.enabled = false
+                            this.experience.sound.crowsSound.play()
+                        }, 1000);
+                    }else{
+                        this.world.godRays.shockWaveShader.uniforms['uTime'].value = this.shockWaveClock.elapsed
+                    }
+                },
+                onComplete: () => {
+
                 }
             }),
             "start"
         )
-
 
         this.timeline.add(
             gsap.to(this.experience.world.godRays.postprocessing.godrayCombineUniforms.fGodRayIntensity, {
@@ -115,7 +140,10 @@ export default class Itachi {
     }
 
     update() {
-
+        const NDCCoords = this.waveTarget.clone().project(this.camera.instance);
+        const x = (NDCCoords.x * .5 + .5);
+        const y = 1.0 - (NDCCoords.y * -.5 + .5);
+        this.world.godRays.shockWaveShader.uniforms['uCenter'].value = new THREE.Vector2(x, y);
     }
 
     setDebug() {

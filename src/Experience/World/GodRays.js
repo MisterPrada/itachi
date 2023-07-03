@@ -8,8 +8,11 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { GlitchPass } from "three/addons/postprocessing/GlitchPass.js";
 import { VignetteShader } from 'three/examples/jsm/shaders/VignetteShader.js';
 
+import shockContrastVertexShader from '../Shaders/Contrast/vertex.glsl';
+import shockContrastFragmentShader from '../Shaders/Contrast/fragment.glsl';
 
-
+import shockWaveVertexShader from '../Shaders/ShockWave/vertex.glsl'
+import shockWaveFragmentShader from '../Shaders/ShockWave/fragment.glsl'
 
 import bloomVertexShader from '../Shaders/Bloom/vertex.glsl'
 import bloomFragmentShader from '../Shaders/Bloom/fragment.glsl'
@@ -96,13 +99,12 @@ export default class GodRays {
 
         this.composer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
         this.composer.setSize(this.sizes.width, this.sizes.height)
+
+        this.shockWaveShader.uniforms.uResolution.value.x = this.sizes.width
+        this.shockWaveShader.uniforms.uResolution.value.y = this.sizes.height
     }
 
     initPostprocessing( renderTargetWidth, renderTargetHeight ) {
-
-
-
-
         this.postprocessing.scene = new THREE.Scene();
 
         this.postprocessing.camera = new THREE.OrthographicCamera( - 0.5, 0.5, 0.5, - 0.5, - 10000, 10000 );
@@ -127,8 +129,6 @@ export default class GodRays {
         this.bloomPass.threshold = this.bloomParams.threshold;
         this.bloomPass.strength = this.bloomParams.strength;
         this.bloomPass.radius = this.bloomParams.radius;
-
-
 
         this.bloomComposer = new EffectComposer( this.renderer );
         this.bloomComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
@@ -166,25 +166,8 @@ export default class GodRays {
                 "tDiffuse": { type: "t", value: null },
                 "contrast":  { type: "f", value: 3.0 } // Level of contrast adjustment
             },
-            vertexShader: [
-                "varying vec2 vUv;",
-                "void main() {",
-                "vUv = uv;",
-                "gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
-                "}"
-            ].join("\n"),
-            fragmentShader: [
-                "uniform sampler2D tDiffuse;",
-                "uniform float contrast;",
-                "varying vec2 vUv;",
-                "void main() {",
-                "vec4 color = texture2D(tDiffuse, vUv);",
-                "vec3 c = color.rgb - 0.5;",
-                "c *= contrast;",
-                "c += 0.5;",
-                "gl_FragColor = vec4(c, color.a);",
-                "}"
-            ].join("\n")
+            vertexShader: shockContrastVertexShader,
+            fragmentShader: shockContrastFragmentShader
         };
 
         this.contrastPass = new ShaderPass(this.contrastShader);
@@ -196,6 +179,23 @@ export default class GodRays {
         this.vignettePass.uniforms['offset'].value = 0.9;
         this.vignettePass.uniforms['darkness'].value = 1.52;
         this.composer.addPass(this.vignettePass);
+
+        this.shockWaveShader = new THREE.ShaderMaterial( {
+            uniforms: {
+                baseTexture: { value: null },
+                uTime: { value: 0 },
+                uResolution: { value: new THREE.Vector2( this.sizes.width, this.sizes.height ) },
+                uCenter: { value: new THREE.Vector2(0.50, 0.8 ) },
+                uWaveParams: { value: new THREE.Vector3(8.0, 2.8, 0.01 ) },
+            },
+            vertexShader: shockWaveVertexShader,
+            fragmentShader: shockWaveFragmentShader,
+            defines: {}
+        } )
+
+        this.shockWavePass = new ShaderPass( this.shockWaveShader , 'baseTexture' );
+        this.shockWavePass.enabled = false;
+        this.composer.addPass(this.shockWavePass);
 
         // this.outputPass = new OutputPass( THREE.ReinhardToneMapping );
         // this.composer.addPass( this.outputPass );
@@ -293,6 +293,20 @@ export default class GodRays {
     }
 
     update() {
+        //this.shockWaveShader.uniforms['uTime'].value = this.time.elapsed;
+
+        // let NDC = new THREE.Vector3();
+        // NDC.setFromMatrixPosition(this.world.itachi.itachi.matrixWorld);
+        //
+        // //
+        // NDC.y += 200;
+        // NDC.project(this.camera);
+        // NDC.x =  NDC.x / 2  + 0.5;
+        // NDC.y = - NDC.y / 2 + 0.5;
+        //
+        // this.shockWaveShader.uniforms['uCenter'].value.x = NDC.x;
+        // this.shockWaveShader.uniforms['uCenter'].value.y = NDC.y;
+        // console.log(NDC);
         this.render();
     }
 

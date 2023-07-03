@@ -65,7 +65,8 @@ export default class Camera
             this.instance.position.copy(this.lerpVector);
         }
 
-        this.instance.lookAt(new THREE.Vector3(0.1, 0.1, 0.1));
+        this.instance.lookAt(new THREE.Vector3(0, 0, 0));
+
         //this.controls.update()
     }
 

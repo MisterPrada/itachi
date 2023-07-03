@@ -23,9 +23,11 @@ export default class Sound extends EventEmitter
     handleVisibilityChange() {
         if (this.isTabVisible()) {
             this.backgroundSound.play();
+            this.crowsSound.play();
             this.listener.setMasterVolume(1)
         } else {
             this.backgroundSound.pause();
+            this.crowsSound.pause();
             this.listener.setMasterVolume(0)
         }
     }
@@ -47,6 +49,11 @@ export default class Sound extends EventEmitter
         this.sharinganSound.setBuffer( this.resources.items.sharinganSound );
         this.sharinganSound.setLoop( false );
         this.sharinganSound.setVolume( 0.7 );
+
+        this.crowsSound = new THREE.Audio( this.listener );
+        this.crowsSound.setBuffer( this.resources.items.crowsSound );
+        this.crowsSound.setLoop( true );
+        this.crowsSound.setVolume( 0.4 );
 
         this.soundsCreated = true;
 
