@@ -139,6 +139,9 @@ export default class GodRays {
 
         this.mixPass = new ShaderPass(
             new THREE.ShaderMaterial( {
+                extensions: {
+                    derivatives: "#extension GL_OES_standard_derivatives : enable"
+                },
                 uniforms: {
                     baseTexture: { value: null },
                     bloomTexture: { value: this.bloomComposer.renderTarget2.texture },
